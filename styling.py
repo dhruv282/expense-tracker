@@ -3,7 +3,7 @@ from pathlib import Path
 import toml
 
 def get_owner_color_map(
-        config_file_path: str = ".streamlit/budget_tracker_config.toml"
+        config_file_path: str = ".streamlit/expense_tracker_config.toml"
     ) -> (dict[str, str] | None):
     try:
         owner_config: list[dict[str, str]] = toml.loads(

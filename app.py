@@ -4,11 +4,11 @@ from streamlit_gsheets import GSheetsConnection
 import tabs
 
 st.set_page_config(
-    page_title="Budget Tracker",
+    page_title="Expense Tracker",
     page_icon="📈",
     layout="wide",
 )
-st.title('Budget Tracker')
+st.title('Expense Tracker')
 
 # Create a connection object.
 conn: GSheetsConnection = st.connection("gsheets", type=GSheetsConnection)
