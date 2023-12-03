@@ -39,7 +39,7 @@ if selected_owner != "All":
 dashboard_tab, df_tab = st.tabs(["Dashboard", "Data"])
 
 with dashboard_tab:
-    tabs.render_dashboard_tab(filtered_df)
+    tabs.render_dashboard_tab(filtered_df.copy())
 
 with df_tab:
-    tabs.render_df_tab(filtered_df)
+    tabs.render_df_tab(filtered_df.copy())
