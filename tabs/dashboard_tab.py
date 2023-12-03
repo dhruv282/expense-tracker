@@ -21,7 +21,7 @@ def dashboard_tab(df):
         df['Month'],
     ], as_index=False).sum(numeric_only=True)
 
-    for i, row in y_m_grouped_data.iterrows():
+    for _, row in y_m_grouped_data.iterrows():
         income = y_m_c_grouped_data.loc[
             (y_m_c_grouped_data['Year'] == row['Year']) &
             (y_m_c_grouped_data['Month'] == row['Month']) &

@@ -3,7 +3,11 @@ import streamlit as st
 from streamlit_gsheets import GSheetsConnection
 import tabs
 
-st.set_page_config(page_title="Budget Tracker", page_icon="📈",)
+st.set_page_config(
+    page_title="Budget Tracker",
+    page_icon="📈",
+    layout="wide",
+)
 st.title('Budget Tracker DashBoard')
 
 # Create a connection object.
