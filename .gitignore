@@ -1,4 +1,4 @@
 **/__pycache__/*
 
-.streamlit/secrets.toml
+.streamlit/*.toml
 .streamlit/*.json
