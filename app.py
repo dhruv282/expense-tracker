@@ -2,6 +2,7 @@ import pandas as pd
 import streamlit as st
 from streamlit_gsheets import GSheetsConnection
 import tabs
+from utils import get_worksheet 
 
 st.set_page_config(
     page_title="Expense Tracker",
@@ -15,7 +16,7 @@ conn: GSheetsConnection = st.connection("gsheets", type=GSheetsConnection)
 
 DATA_TTL_SECONDS = 10 * 60 # 10 mins
 df: pd.DataFrame = conn.read(
-    worksheet="History",
+    worksheet=get_worksheet(),
     ttl=DATA_TTL_SECONDS,
 )
 
@@ -23,7 +24,7 @@ df: pd.DataFrame = conn.read(
 df.columns = df.iloc[0]
 df = df[1:]
 df = df.dropna()
-df["Price"] = pd.to_numeric(df['Price'])
+df["Price"] = pd.to_numeric(df['Price'].map(lambda x: str(x).lstrip('$').replace(',','')))
 df["Date"] = pd.to_datetime(df["Date"], format="%m/%d/%Y")
 df.sort_values(by="Date", ascending=False, inplace=True)
 
