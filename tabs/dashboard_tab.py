@@ -26,19 +26,30 @@ def dashboard_tab(df):
             (y_m_c_grouped_data['Year'] == row['Year']) &
             (y_m_c_grouped_data['Month'] == row['Month']) &
             (y_m_c_grouped_data['Category'] == 'Income'), 'Price'
-        ].values[0]
-        
-        y_m_c_grouped_data.loc[
-            (y_m_c_grouped_data['Year'] == row['Year']) &
-            (y_m_c_grouped_data['Month'] == row['Month']) &
-            (y_m_c_grouped_data['Category'] == 'Income'), 'Category'
-        ] = 'Savings'
-        
-        y_m_c_grouped_data.loc[
-            (y_m_c_grouped_data['Year'] == row['Year']) &
-            (y_m_c_grouped_data['Month'] == row['Month']) &
-            (y_m_c_grouped_data['Category'] == 'Savings'), 'Price'
-        ] = income - (row['Price'] - income)
+        ].values
+
+        if income:
+            income = income[0]
+
+            # Replace Income row with Savings
+            y_m_c_grouped_data.loc[
+                (y_m_c_grouped_data['Year'] == row['Year']) &
+                (y_m_c_grouped_data['Month'] == row['Month']) &
+                (y_m_c_grouped_data['Category'] == 'Income'), 'Category'
+            ] = 'Savings'
+
+            y_m_c_grouped_data.loc[
+                (y_m_c_grouped_data['Year'] == row['Year']) &
+                (y_m_c_grouped_data['Month'] == row['Month']) &
+                (y_m_c_grouped_data['Category'] == 'Savings'), 'Price'
+            ] = income - (row['Price'] - income)
+        else:
+            income = 0
+            y_m_c_grouped_data = pd.concat([
+                y_m_c_grouped_data,
+                pd.DataFrame(
+                    [[row['Year'], row['Month'], 'Savings', income - row['Price']]],
+                    columns=y_m_c_grouped_data.columns)])
 
     pie_chart = px.pie(y_m_c_grouped_data, values="Price", names="Category", hole=0.75,
                       color="Category", color_discrete_map=category_color_map)
