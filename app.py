@@ -11,11 +11,12 @@ st.set_page_config(
 st.title('Budget Tracker')
 
 # Create a connection object.
-conn = st.connection("gsheets", type=GSheetsConnection)
+conn: GSheetsConnection = st.connection("gsheets", type=GSheetsConnection)
 
-df = conn.read(
+DATA_TTL_SECONDS = 10 * 60 # 10 mins
+df: pd.DataFrame = conn.read(
     worksheet="History",
-    ttl="10m",
+    ttl=DATA_TTL_SECONDS,
 )
 
 # Prep dataframe
@@ -28,15 +29,15 @@ df.sort_values(by="Date", ascending=False, inplace=True)
 
 year_col, owner_col = st.columns(2)
 
-year_options = df["Date"].dt.strftime('%Y').drop_duplicates().tolist()
+year_options: list[str] = df["Date"].dt.strftime('%Y').drop_duplicates().tolist()
 year_options.sort(reverse=True)
-selected_year = year_col.selectbox("📆 Year", ["All"] + year_options, index=1)
+selected_year: str | None = year_col.selectbox("📆 Year", ["All"] + year_options, index=1)
 filtered_df = df
-if selected_year != "All":
+if selected_year and selected_year != "All":
     filtered_df = df[df['Date'].dt.year == int(selected_year)]
 
-owner_options = ["All"] + df["Owner"].drop_duplicates().tolist()
-selected_owner = owner_col.selectbox("👤 Owner", owner_options, index=0)
+owner_options: list[str] = ["All"] + df["Owner"].drop_duplicates().tolist()
+selected_owner: str | None = owner_col.selectbox("👤 Owner", owner_options, index=0)
 if selected_owner != "All":
     filtered_df = filtered_df[filtered_df['Owner'] == selected_owner]
 

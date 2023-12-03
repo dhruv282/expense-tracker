@@ -1,9 +1,10 @@
 import pandas as pd
 import plotly.express as px
+import plotly.graph_objects as go
 import streamlit as st
 from styling import category_color_map
 
-def dashboard_tab(df):
+def dashboard_tab(df: pd.DataFrame) -> None:
     # Temporarily turning off false positive warning
     # https://www.dataquest.io/blog/settingwithcopywarning/#falsepositives
     with pd.option_context('mode.chained_assignment', None):
@@ -22,7 +23,7 @@ def dashboard_tab(df):
     ], as_index=False).sum(numeric_only=True)
 
     for _, row in y_m_grouped_data.iterrows():
-        income = y_m_c_grouped_data.loc[
+        income: list[int] = y_m_c_grouped_data.loc[
             (y_m_c_grouped_data['Year'] == row['Year']) &
             (y_m_c_grouped_data['Month'] == row['Month']) &
             (y_m_c_grouped_data['Category'] == 'Income'), 'Price'
@@ -51,7 +52,7 @@ def dashboard_tab(df):
                     [[row['Year'], row['Month'], 'Savings', income - row['Price']]],
                     columns=y_m_c_grouped_data.columns)])
 
-    pie_chart = px.pie(y_m_c_grouped_data, values="Price", names="Category", hole=0.75,
+    pie_chart: go.Figure = px.pie(y_m_c_grouped_data, values="Price", names="Category", hole=0.75,
                       color="Category", color_discrete_map=category_color_map)
     pie_chart.update_traces(textinfo="percent+label")
     pie_chart.update_traces(hovertemplate="%{label} (%{percent}) <br> %{value:$,.2f}")

@@ -2,13 +2,15 @@ import logging
 from pathlib import Path
 import toml
 
-def get_owner_color_map(config_file_path = ".streamlit/budget_tracker_config.toml"):
+def get_owner_color_map(
+        config_file_path: str = ".streamlit/budget_tracker_config.toml"
+    ) -> (dict[str, str] | None):
     try:
-        owner_config = toml.loads(
+        owner_config: list[dict[str, str]] = toml.loads(
             Path(config_file_path).read_text(encoding="utf-8")
         )['owners']
         if len(owner_config) > 0:
-            owner_color_map = {}
+            owner_color_map: dict[str, str] = {}
             for owner in owner_config:
                 owner_color_map[owner['name']] = owner['color']
             return owner_color_map
