@@ -34,3 +34,9 @@ A Docker image can also be built and deployed for users who prefer alternate hos
 $ docker build -t expense-tracker .
 $ docker run -p 8501:8501 expense-tracker
 ```
+
+## License
+
+Expense Tracker is open-source software released under the [MIT License](https://opensource.org/licenses/MIT). You are free to modify and distribute the application under the terms of this license. See the [`LICENSE`](./LICENSE) file for more information.
+
+Please note that this README file is subject to change as the application evolves. Refer to the latest version of this file in the repository for the most up-to-date information.
