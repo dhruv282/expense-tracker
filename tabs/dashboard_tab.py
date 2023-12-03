@@ -43,5 +43,5 @@ def dashboard_tab(df):
     pie_chart = px.pie(y_m_c_grouped_data, values="Price", names="Category", hole=0.75,
                       color="Category", color_discrete_map=category_color_map)
     pie_chart.update_traces(textinfo="percent+label")
-    pie_chart.update_traces(hovertemplate="%{label} (%{percent}) <br> %{value:$,.2f} </br>")
+    pie_chart.update_traces(hovertemplate="%{label} (%{percent}) <br> %{value:$,.2f}")
     st.plotly_chart(pie_chart, theme=None, use_container_width=True)

@@ -8,7 +8,7 @@ st.set_page_config(
     page_icon="📈",
     layout="wide",
 )
-st.title('Budget Tracker DashBoard')
+st.title('Budget Tracker')
 
 # Create a connection object.
 conn = st.connection("gsheets", type=GSheetsConnection)
@@ -40,10 +40,13 @@ selected_owner = owner_col.selectbox("👤 Owner", owner_options, index=0)
 if selected_owner != "All":
     filtered_df = filtered_df[filtered_df['Owner'] == selected_owner]
 
-dashboard_tab, df_tab = st.tabs(["Dashboard", "Data"])
+dashboard_tab, breakdown_tab, df_tab = st.tabs(["Dashboard", "Breakdown", "Data"])
 
 with dashboard_tab:
     tabs.render_dashboard_tab(filtered_df.copy())
+
+with breakdown_tab:
+    tabs.render_breakdown_tab(filtered_df.copy())
 
 with df_tab:
     tabs.render_df_tab(filtered_df.copy())
