@@ -4,7 +4,7 @@ import plotly.graph_objects as go
 import streamlit as st
 from styling import category_color_map
 
-def dashboard_tab(df: pd.DataFrame) -> None:
+def summary_tab(df: pd.DataFrame) -> None:
     savings_expenses_column, expenses_breakdown_column = st.columns(2)
 
     c_grouped_data = df.groupby([

@@ -42,10 +42,10 @@ selected_owner: str | None = owner_col.selectbox("👤 Owner", owner_options, in
 if selected_owner != "All":
     filtered_df = filtered_df[filtered_df['Owner'] == selected_owner]
 
-dashboard_tab, breakdown_tab, df_tab = st.tabs(["Dashboard", "Breakdown", "Data"])
+summary_tab, breakdown_tab, df_tab = st.tabs(["Summary", "Breakdown", "Data"])
 
-with dashboard_tab:
-    tabs.render_dashboard_tab(filtered_df.copy())
+with summary_tab:
+    tabs.render_summary_tab(filtered_df.copy())
 
 with breakdown_tab:
     tabs.render_breakdown_tab(filtered_df.copy())
