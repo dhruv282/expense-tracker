@@ -5,55 +5,46 @@ import streamlit as st
 from styling import category_color_map
 
 def dashboard_tab(df: pd.DataFrame) -> None:
-    # Temporarily turning off false positive warning
-    # https://www.dataquest.io/blog/settingwithcopywarning/#falsepositives
-    with pd.option_context('mode.chained_assignment', None):
-        df.loc[:,'Year'] = df['Date'].dt.year
-        df.loc[:,'Month'] = df['Date'].dt.month
+    savings_expenses_column, expenses_breakdown_column = st.columns(2)
 
-    y_m_c_grouped_data = df.groupby([
-        df['Year'],
-        df['Month'],
+    c_grouped_data = df.groupby([
         df['Category'],
     ], as_index=False).sum(numeric_only=True)
-
-    y_m_grouped_data = df.groupby([
-        df['Year'],
-        df['Month'],
-    ], as_index=False).sum(numeric_only=True)
-
-    for _, row in y_m_grouped_data.iterrows():
-        income: list[int] = y_m_c_grouped_data.loc[
-            (y_m_c_grouped_data['Year'] == row['Year']) &
-            (y_m_c_grouped_data['Month'] == row['Month']) &
-            (y_m_c_grouped_data['Category'] == 'Income'), 'Price'
-        ].values
-
+    expenses = c_grouped_data.loc[(c_grouped_data['Category'] != 'Income'), :]
+    income: list[int] = c_grouped_data.loc[
+        (c_grouped_data['Category'] == 'Income'), 'Price'
+    ].values
+    
+    with savings_expenses_column:
+        expenses_total = expenses.loc[:, 'Price'].sum(numeric_only=True)
+        c_grouped_data_rows = [[ 'Expenses', expenses_total  ]]
         if income:
             income = income[0]
+            if not expenses_total:
+                expenses_total = 0
+            savings = income - expenses_total
+            if savings > 0:
+                c_grouped_data_rows.append([ 'Savings', savings  ])
+        c_grouped_data = pd.DataFrame(c_grouped_data_rows, columns=['Category', 'Price'])
 
-            # Replace Income row with Savings
-            y_m_c_grouped_data.loc[
-                (y_m_c_grouped_data['Year'] == row['Year']) &
-                (y_m_c_grouped_data['Month'] == row['Month']) &
-                (y_m_c_grouped_data['Category'] == 'Income'), 'Category'
-            ] = 'Savings'
-
-            y_m_c_grouped_data.loc[
-                (y_m_c_grouped_data['Year'] == row['Year']) &
-                (y_m_c_grouped_data['Month'] == row['Month']) &
-                (y_m_c_grouped_data['Category'] == 'Savings'), 'Price'
-            ] = income - (row['Price'] - income)
-        else:
-            income = 0
-            y_m_c_grouped_data = pd.concat([
-                y_m_c_grouped_data,
-                pd.DataFrame(
-                    [[row['Year'], row['Month'], 'Savings', income - row['Price']]],
-                    columns=y_m_c_grouped_data.columns)])
-
-    pie_chart: go.Figure = px.pie(y_m_c_grouped_data, values="Price", names="Category", hole=0.75,
-                      color="Category", color_discrete_map=category_color_map)
-    pie_chart.update_traces(textinfo="percent+label")
-    pie_chart.update_traces(hovertemplate="%{label} (%{percent}) <br> %{value:$,.2f}")
-    st.plotly_chart(pie_chart, theme=None, use_container_width=True)
+        savings_expenses_pie_chart: go.Figure = px.pie(c_grouped_data, values="Price", names="Category", hole=0.75,
+                        color="Category", color_discrete_map={
+                            'Savings': '#7cfc00',
+                            'Expenses': '#fc0000'},
+                        title="Savings/Expenses Breakdown")
+        savings_expenses_pie_chart.update_layout(showlegend=False,
+                                                    annotations=[dict(text=f'Income: ${income:,.2f}',
+                                                                    font_size=20,
+                                                                    showarrow=False)])
+        savings_expenses_pie_chart.update_traces(textinfo="percent+label")
+        savings_expenses_pie_chart.update_traces(hovertemplate="%{label} (%{percent}) <br> %{value:$,.2f}")
+        st.plotly_chart(savings_expenses_pie_chart, theme=None, use_container_width=True)
+    
+    with expenses_breakdown_column:
+        expenses_breakdown_pie_chart: go.Figure = px.pie(expenses, values="Price", names="Category", hole=0.75,
+                            color="Category", color_discrete_map=category_color_map,
+                            title="Expense Breakdown")
+        expenses_breakdown_pie_chart.update_layout(showlegend=False)
+        expenses_breakdown_pie_chart.update_traces(textinfo="percent+label")
+        expenses_breakdown_pie_chart.update_traces(hovertemplate="%{label} (%{percent}) <br> %{value:$,.2f}")
+        st.plotly_chart(expenses_breakdown_pie_chart, theme=None, use_container_width=True)
