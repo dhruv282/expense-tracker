@@ -62,6 +62,8 @@ def breakdown_tab(df: pd.DataFrame) -> None:
 
         histogram: go.Figure = px.histogram(data, x="Category", y="Price", color="Owner", barmode="group",
                                             text_auto='.2s', color_discrete_map=get_owner_color_map())
+    histogram.update_yaxes(title='')
+    histogram.update_xaxes(title='')
     histogram.update_traces(textfont_size=12, textangle=0, textposition="outside", cliponaxis=False,
                             hovertemplate="%{x} <br> %{y:$,.2f}")
     histogram.update_layout(bargroupgap=0.15, xaxis={'categoryorder':'total descending'})
