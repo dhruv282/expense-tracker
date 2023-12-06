@@ -1,5 +1,7 @@
 # Expense Tracker
 
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://expense-tracker-demo.streamlit.app/)
+
 Expense Tracker is an open-source expense tracking and visualization program developed using [Streamlit](https://streamlit.io/). The data is supplied by a user specified Google Sheet. Visualizations generated in this app are created using [Plotly](https://plotly.com/python/).
 
 ## Usage
