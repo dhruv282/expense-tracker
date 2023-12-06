@@ -19,12 +19,14 @@ def summary_tab(df: pd.DataFrame) -> None:
         expenses_total = expenses.loc[:, 'Price'].sum(numeric_only=True)
         c_grouped_data_rows = [[ 'Expenses', expenses_total  ]]
         if income:
-            income = income[0]
+            income_total = income[0]
             if not expenses_total:
                 expenses_total = 0
-            savings = income - expenses_total
+            savings = income_total - expenses_total
             if savings > 0:
                 c_grouped_data_rows.append([ 'Savings', savings  ])
+        else:
+            income_total = 0
         c_grouped_data = pd.DataFrame(c_grouped_data_rows, columns=['Category', 'Price'])
 
         savings_expenses_pie_chart: go.Figure = px.pie(c_grouped_data, values="Price", names="Category", hole=0.75,
@@ -33,7 +35,7 @@ def summary_tab(df: pd.DataFrame) -> None:
                             'Expenses': '#fc0000'},
                         title="Savings/Expenses Breakdown")
         savings_expenses_pie_chart.update_layout(showlegend=False,
-                                                    annotations=[dict(text=f'Income: ${income:,.2f}',
+                                                    annotations=[dict(text=f'Income: ${income_total:,.2f}',
                                                                     font_size=20,
                                                                     showarrow=False)])
         savings_expenses_pie_chart.update_traces(textinfo="percent+label")
