@@ -6,18 +6,16 @@ from styling import get_owner_color_map, category_color_map
 from typing import Callable
 
 def process_data(df: pd.DataFrame,
-                 income_filter: Callable[[pd.DataFrame], pd.Series],
-                 expense_filter: Callable[[pd.DataFrame], pd.Series],
                  get_savings_df: Callable[[int], pd.DataFrame],
                  hide_savings: bool) -> pd.DataFrame:
-    income: list[int] = df.loc[income_filter(df), 'Price'].values
+    income: list[int] = df.loc[(df['Category'] == 'Income'), 'Price'].values
     if income:
         income_total = income[0]
-        df = df.drop(df[income_filter(df)].index)
+        df = df.drop(df[(df['Category'] == 'Income')].index)
     else:
         income_total = 0
     if not hide_savings:
-        expenses = df.loc[expense_filter(df), :]
+        expenses = df.loc[(df['Category'] != 'Income'), :]
         expenses_total = expenses.loc[:, 'Price'].sum(numeric_only=True)
         if not expenses_total:
             expenses_total = 0
@@ -35,8 +33,6 @@ def breakdown_tab(df: pd.DataFrame) -> None:
             df['Category'],
         ], as_index=False).sum(numeric_only=True)
         data = process_data(c_grouped_data,
-                            lambda df: (df['Category'] == 'Income'),
-                            lambda df: (df['Category'] != 'Income'),
                             lambda s: pd.DataFrame({
                                 'Category': ['Savings'],
                                 'Price': [s],
@@ -52,17 +48,17 @@ def breakdown_tab(df: pd.DataFrame) -> None:
         o_grouped_data = df.groupby([
             df['Owner'],
         ], as_index=False).sum(numeric_only=True)
+        data = pd.DataFrame()
         for _, row in o_grouped_data.iterrows():
-            c_o_grouped_data =  process_data(c_o_grouped_data,
-                                             lambda df: (df['Category'] == 'Income') & (df['Owner'] == row['Owner']),
-                                             lambda df: (df['Category'] != 'Income') & (df['Owner'] != row['Owner']),
-                                             lambda s: pd.DataFrame({
-                                                 'Owner': [row['Owner']],
-                                                 'Category': ['Savings'],
-                                                 'Price': [s],
-                                             }),
-                                             savings_toggle)
-        data = c_o_grouped_data
+            data = pd.concat([data, 
+                              process_data(c_o_grouped_data.loc[c_o_grouped_data['Owner'] == row['Owner']],
+                                           lambda s: pd.DataFrame({
+                                               'Owner': [row['Owner']],
+                                               'Category': ['Savings'],
+                                               'Price': [s],
+                                               }),
+                                               savings_toggle)
+                            ], axis=0)
 
         histogram: go.Figure = px.histogram(data, x="Category", y="Price", color="Owner", barmode="group",
                                             text_auto='.2s', color_discrete_map=get_owner_color_map())
