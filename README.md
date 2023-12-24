@@ -11,7 +11,7 @@ A sample Google Sheet compatible with this application can be found here:
 
 The connection to Google Sheets is powered by [gsheets-connection](https://github.com/streamlit/gsheets-connection). Follow instructions in the repo to connect the desired Google Sheet.
 
-This application supports tracking for expense trackers that involve multiple individuals. Transaction owners can be specified as shown in the example file: [.streamlit/expense_tracker_config.toml](.streamlit/expense_tracker_config.toml).
+This application supports tracking for expense trackers that involve multiple individuals. Transaction owners can be specified as shown in the example file: [.streamlit/secrets.toml](.streamlit/secrets.toml).
 
 ### Running locally
 

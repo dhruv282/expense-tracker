@@ -3,12 +3,12 @@ from pathlib import Path
 import toml
 
 def get_owner_color_map(
-        config_file_path: str = ".streamlit/expense_tracker_config.toml"
+        config_file_path: str = ".streamlit/secrets.toml"
     ) -> (dict[str, str] | None):
     try:
         owner_config: list[dict[str, str]] = toml.loads(
             Path(config_file_path).read_text(encoding="utf-8")
-        )['owners']
+        )['expense_tracker']['owners']
         if len(owner_config) > 0:
             owner_color_map: dict[str, str] = {}
             for owner in owner_config:
