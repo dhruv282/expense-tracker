@@ -1,8 +1,11 @@
+import calendar
 from gspread import service_account_from_dict
 from gspread.spreadsheet import Spreadsheet, Worksheet
 import logging
 from pathlib import Path
 import toml
+
+month_labels = {m: calendar.month_abbr[m] for m in range(1,13)}
 
 def get_worksheet(
         config_file_path: str = ".streamlit/secrets.toml"

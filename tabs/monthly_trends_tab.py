@@ -1,8 +1,8 @@
-import calendar
 import pandas as pd
 import plotly.express as px
 import streamlit as st
 from styling import category_color_map
+from utils import month_labels
 
 def monthly_trends_tab(df: pd.DataFrame):
     df['Month'] = df['Date'].dt.month
@@ -13,7 +13,6 @@ def monthly_trends_tab(df: pd.DataFrame):
         ], as_index=False).sum(numeric_only=True)
     expenses = m_grouped_data.loc[(m_grouped_data['Category'] != 'Income'), :]
     expenses = expenses.groupby([expenses['Month']], as_index=False).sum(numeric_only=True)
-    month_labels = {m: calendar.month_abbr[m] for m in range(1,13)}
     line_chart = px.line(m_grouped_data[m_grouped_data['Category'] == 'Income'], x='Month',
                          y='Price', color='Category', color_discrete_map=category_color_map,
                          markers=True)

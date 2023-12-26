@@ -48,7 +48,8 @@ selected_owner: str | None = owner_col.selectbox("👤 Owner", owner_options, in
 if selected_owner != "All":
     filtered_df = filtered_df[filtered_df['Owner'] == selected_owner]
 
-summary_tab, breakdown_tab, monthly_trends_tab, add_transaction_tab, df_tab = st.tabs(["Summary", "Breakdown", "Monthly Trends", "Add Transaction", "Data"])
+summary_tab, breakdown_tab, monthly_trends_tab, expense_heatmap_tab, add_transaction_tab, df_tab = st.tabs([
+    "Summary", "Breakdown", "Monthly Trends", "Expense Heatmap", "Add Transaction", "Data"])
 
 with summary_tab:
     tabs.render_summary_tab(filtered_df.copy())
@@ -58,6 +59,9 @@ with breakdown_tab:
 
 with monthly_trends_tab:
     tabs.render_monthly_trends_tab(filtered_df.copy())
+
+with expense_heatmap_tab:
+    tabs.render_expense_heatmap_tab(filtered_df.copy())
 
 with add_transaction_tab:
     tabs.render_add_transaction_tab()
