@@ -4,3 +4,4 @@ plotly==5.18.0
 st-gsheets-connection==0.0.3
 streamlit==1.29.0
 toml==0.10.2
+wordcloud==1.9.3

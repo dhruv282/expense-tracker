@@ -30,6 +30,7 @@ df: pd.DataFrame = conn.read(
 df.columns = df.iloc[0]
 df = df[1:]
 df = df.dropna()
+df['Memo'] = df['Memo'].str.strip()
 df["Price"] = pd.to_numeric(df['Price'].map(lambda x: str(x).lstrip('$').replace(',','')))
 df["Date"] = pd.to_datetime(df["Date"], format="%m/%d/%Y")
 df.sort_values(by="Date", ascending=False, inplace=True)
@@ -48,8 +49,8 @@ selected_owner: str | None = owner_col.selectbox("👤 Owner", owner_options, in
 if selected_owner != "All":
     filtered_df = filtered_df[filtered_df['Owner'] == selected_owner]
 
-summary_tab, breakdown_tab, monthly_trends_tab, expense_heatmap_tab, add_transaction_tab, df_tab = st.tabs([
-    "Summary", "Breakdown", "Monthly Trends", "Expense Heatmap", "Add Transaction", "Data"])
+summary_tab, breakdown_tab, monthly_trends_tab, expense_heatmap_tab, wordcloud_tab, add_transaction_tab, df_tab = st.tabs([
+    "Summary", "Breakdown", "Monthly Trends", "Expense Heatmap", "WordCloud", "Add Transaction", "Data"])
 
 with summary_tab:
     tabs.render_summary_tab(filtered_df.copy())
@@ -62,6 +63,9 @@ with monthly_trends_tab:
 
 with expense_heatmap_tab:
     tabs.render_expense_heatmap_tab(filtered_df.copy())
+
+with wordcloud_tab:
+    tabs.render_wordcloud_tab(filtered_df.copy())
 
 with add_transaction_tab:
     tabs.render_add_transaction_tab()
