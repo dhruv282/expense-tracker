@@ -1,6 +1,6 @@
 import streamlit as st
 from styling import category_color_map, payment_method_color_map, get_owner_color_map, payment_method_label_prefix
-from utils import get_worksheet_client
+from utils import get_worksheet_client, get_transaction_tab_shared_default
 
 def transaction_tab():
     worksheet_client = get_worksheet_client()
@@ -16,7 +16,7 @@ def transaction_tab():
                 price = st.number_input('Price')
                 payment_method = st.selectbox('Payment Method', payment_method_color_map.keys(), index=0,
                                             format_func=lambda p: f'{payment_method_label_prefix[p]} {p}')
-                shared = st.checkbox('Shared')
+                shared = st.checkbox('Shared Expense?', value=get_transaction_tab_shared_default())
                 if shared:
                     shared = 'Yes'
                 else:

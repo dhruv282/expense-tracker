@@ -7,6 +7,28 @@ import toml
 
 month_labels = {m: calendar.month_abbr[m] for m in range(1,13)}
 
+def get_transaction_tab_shared_default(
+        config_file_path: str = ".streamlit/secrets.toml",
+        fallback_val: bool = False
+) -> bool:
+    """
+    Gets transaction tab default for shared field.
+    """
+    try:
+        secrets_config: list[dict[str, str]] = toml.loads(
+            Path(config_file_path).read_text(encoding="utf-8")
+        )
+        if 'expense_tracker' in secrets_config and \
+            'transaction_tab' in secrets_config['expense_tracker'] and \
+            'defaults' in secrets_config['expense_tracker']['transaction_tab'] and \
+            'shared' in secrets_config['expense_tracker']['transaction_tab']['defaults']:
+            return secrets_config['expense_tracker']['transaction_tab']['defaults']['shared']
+        else:
+            return fallback_val
+    except (FileNotFoundError, toml.decoder.TomlDecodeError, KeyError):
+        logging.info("No config file found")
+    return fallback_val
+
 def get_worksheet(
         config_file_path: str = ".streamlit/secrets.toml"
 ) -> str | None:
