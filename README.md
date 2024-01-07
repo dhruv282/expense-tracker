@@ -26,6 +26,12 @@ Run the following command to start a local instance of this using the Streamlit 
 $ streamlit run app.py
 ```
 
+### Configuration
+
+A sample [secrets.toml](.streamlit/secrets.toml) file using all currently available configuration options has been supplied in the `.streamlit` directory. You can learn more about Streamlit configuration options via the [Streamlit docs](https://docs.streamlit.io/library/advanced-features/configuration).
+
+Use the `secrets.toml` to add the credentials for your own Google Sheet.
+
 ### Deployment
 
 Follow the official [Streamlit deployment guide](https://docs.streamlit.io/streamlit-community-cloud/deploy-your-app) to host this on the Streamlit Community Cloud.
