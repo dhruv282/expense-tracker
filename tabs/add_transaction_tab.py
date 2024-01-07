@@ -6,6 +6,7 @@ from utils import get_worksheet_client, get_transaction_tab_shared_default
 def transaction_tab() -> None:
     worksheet_client = get_worksheet_client()
     shared_default = get_transaction_tab_shared_default()
+    st.session_state['shared'] = shared_default
     if worksheet_client:
         with st.form('add_transaction_form', clear_on_submit=False, border=False):
             col1, col2 = st.columns(2)
@@ -21,7 +22,6 @@ def transaction_tab() -> None:
                                             format_func=lambda p: f'{payment_method_label_prefix[p]} {p}',
                                             key='payment_method')
                 shared = st.checkbox('Shared Expense?',
-                                     value=shared_default,
                                      key='shared')
                 if shared:
                     shared = 'Yes'
