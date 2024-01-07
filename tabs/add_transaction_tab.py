@@ -27,27 +27,29 @@ def transaction_tab() -> None:
                     shared = 'Yes'
                 else:
                     shared = 'No'
-            if st.form_submit_button('Submit', type='primary'):
-                if not memo or price <= 0:
-                    if not memo:
-                        st.toast(':red[Invalid value for Memo field]', icon='😢')
-                    if price <= 0:
-                        st.toast(':red[Invalid value for Price field]', icon='😢')
-                else:
-                    values = [date.strftime('%m/%d/%Y'), memo, category, owner, price, payment_method, shared]
-                    res = worksheet_client.append_row(values)
-                    if res:
-                        st.toast(':green[Transaction added successfully!]', icon='🎉')
+            submit_col1, submit_col2 = st.columns(2)
+            with submit_col1:
+                if st.form_submit_button('Submit', type='primary', use_container_width=True):
+                    if not memo or price <= 0:
+                        if not memo:
+                            st.toast(':red[Invalid value for Memo field]', icon='😢')
+                        if price <= 0:
+                            st.toast(':red[Invalid value for Price field]', icon='😢')
                     else:
-                        st.toast(':red[Something went wrong]', icon='😢')
-
-            def clear():
-                st.session_state['date'] = datetime.date.today()
-                st.session_state['memo'] = ''
-                st.session_state['price'] = 0.0
-                st.session_state['payment_method'] = 'Credit'
-                st.session_state['shared'] = shared_default
-            if st.form_submit_button('Clear', type='secondary', on_click=clear):
-                st.toast(':green[Form cleared!]', icon='✔️')
+                        values = [date.strftime('%m/%d/%Y'), memo, category, owner, price, payment_method, shared]
+                        res = worksheet_client.append_row(values)
+                        if res:
+                            st.toast(':green[Transaction added successfully!]', icon='🎉')
+                        else:
+                            st.toast(':red[Something went wrong]', icon='😢')
+            with submit_col2:
+                def clear():
+                    st.session_state['date'] = datetime.date.today()
+                    st.session_state['memo'] = ''
+                    st.session_state['price'] = 0.0
+                    st.session_state['payment_method'] = 'Credit'
+                    st.session_state['shared'] = shared_default
+                if st.form_submit_button('Clear', type='secondary', on_click=clear, use_container_width=True):
+                    st.toast(':green[Form cleared!]', icon='✔️')
     else:
         st.error('Service account not setup with write permissions')
