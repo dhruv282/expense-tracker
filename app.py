@@ -50,7 +50,7 @@ if selected_owner != "All":
     filtered_df = filtered_df[filtered_df['Owner'] == selected_owner]
 
 summary_tab, breakdown_tab, monthly_trends_tab, expense_heatmap_tab, wordcloud_tab, add_transaction_tab, df_tab = st.tabs([
-    "Summary", "Breakdown", "Monthly Trends", "Expense Heatmap", "WordCloud", "Add Transaction", "Data"])
+    "Summary", "Breakdown", "Monthly Trends", "Expense Heatmap", "Word Cloud", "Add Transaction", "Data"])
 
 with summary_tab:
     tabs.render_summary_tab(filtered_df.copy())
