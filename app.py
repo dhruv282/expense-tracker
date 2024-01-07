@@ -17,6 +17,10 @@ if google_sheets_titles_and_url:
     title = f"{s_title} ({w_title})" if w_title else f"{s_title}"
     st.link_button(f"📝{title}", url, help="Google Sheets link")
 
+if st.button("🔄 Refresh Data"):
+    st.cache_data.clear()
+    st.rerun()
+
 # Create a connection object.
 conn: GSheetsConnection = st.connection("gsheets", type=GSheetsConnection)
 
