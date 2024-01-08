@@ -18,7 +18,12 @@ def get_transaction_tab_presets(
             Path(config_file_path).read_text(encoding="utf-8")
         )['expense_tracker']['transaction_tab']['presets']
         if len(presets) > 0:
-            return {f"{p['memo']} ({p['owner']})": p for p in presets}
+            def get_key(p_dict):
+                key = f"{p_dict['memo']}"
+                if 'owner' in p_dict:
+                    return f"{key} ({p_dict['owner']})"
+                return key
+            return {get_key(p): p for p in presets}
         else:
             return None
     except (FileNotFoundError, toml.decoder.TomlDecodeError, KeyError):
