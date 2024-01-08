@@ -7,6 +7,24 @@ import toml
 
 month_labels = {m: calendar.month_abbr[m] for m in range(1,13)}
 
+def get_transaction_tab_presets(
+        config_file_path: str = ".streamlit/secrets.toml"
+    ) -> (dict[str, dict[str, str|bool|int]] | None):
+    """
+    Gets transaction presets for the Add Transaction tab.
+    """
+    try:
+        presets: list[dict[str, str|bool|int]] = toml.loads(
+            Path(config_file_path).read_text(encoding="utf-8")
+        )['expense_tracker']['transaction_tab']['presets']
+        if len(presets) > 0:
+            return {f"{p['memo']} ({p['owner']})": p for p in presets}
+        else:
+            return None
+    except (FileNotFoundError, toml.decoder.TomlDecodeError, KeyError):
+        logging.info("No config specified, continuing without presets")
+    return None
+
 def get_transaction_tab_shared_default(
         config_file_path: str = ".streamlit/secrets.toml",
         fallback_val: bool = False
@@ -77,7 +95,7 @@ def get_spreadsheet_client(config_file_path: str = ".streamlit/secrets.toml") ->
 def get_worksheet_client(config_file_path: str = ".streamlit/secrets.toml",
                          check_write_perms: bool = True) -> Worksheet | None:
     """
-    Get worksheet client using service account
+    Get worksheet client using service account.
     """
     try:
         secrets_config: list[dict[str, str]] = toml.loads(

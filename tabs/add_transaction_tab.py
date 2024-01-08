@@ -1,22 +1,47 @@
 import datetime
 import streamlit as st
 from styling import category_color_map, payment_method_color_map, get_owner_color_map, payment_method_label_prefix
-from utils import get_worksheet_client, get_transaction_tab_shared_default
+from utils import get_worksheet_client, get_transaction_tab_shared_default, get_transaction_tab_presets
 
 def transaction_tab() -> None:
     worksheet_client = get_worksheet_client()
     shared_default = get_transaction_tab_shared_default()
     st.session_state['shared'] = shared_default
     if worksheet_client:
+        presets = get_transaction_tab_presets()
+        if presets:
+            preset = st.selectbox('Preset', ['New transaction'] + list(presets.keys()), key='preset')
+            if preset:
+                if preset == 'New transaction':
+                    st.session_state['memo'] = ''
+                    st.session_state['price'] = 0
+                    st.session_state['payment_method'] = 'Credit'
+                    st.session_state['shared_expense'] = shared_default
+                else:
+                    preset_val = presets[preset]
+                    if 'memo' in preset_val:
+                        st.session_state['memo'] = preset_val['memo']
+                    if 'category' in preset_val:
+                        st.session_state['category'] = preset_val['category']
+                    if 'owner' in preset_val:
+                        st.session_state['owner'] = preset_val['owner']
+                    if 'price' in preset_val:
+                        st.session_state['price'] = float(preset_val['price'])
+                    if 'payment_method' in preset_val:
+                        st.session_state['payment_method'] = preset_val['payment_method']
+                    if 'shared' in preset_val:
+                        st.session_state['shared'] = bool(preset_val['shared'])
+
         with st.form('add_transaction_form', clear_on_submit=False, border=False):
             col1, col2 = st.columns(2)
             with col1:
                 date = st.date_input('Date', value='today', format='MM/DD/YYYY', key='date')
                 memo = st.text_input('Memo', key='memo')
                 category = st.selectbox('Category',
-                                        [c for c in category_color_map.keys() if c != 'Savings'])
+                                        [c for c in category_color_map.keys() if c != 'Savings'],
+                                        key='category')
             with col2:
-                owner = st.selectbox('Owner', get_owner_color_map())
+                owner = st.selectbox('Owner', get_owner_color_map(), key='owner')
                 price = st.number_input('Price', key='price')
                 payment_method = st.selectbox('Payment Method', payment_method_color_map.keys(), index=0,
                                             format_func=lambda p: f'{payment_method_label_prefix[p]} {p}',
@@ -44,6 +69,7 @@ def transaction_tab() -> None:
                             st.toast(':red[Something went wrong]', icon='😢')
             with submit_col2:
                 def clear():
+                    st.session_state['preset'] = 'New transaction'
                     st.session_state['date'] = datetime.date.today()
                     st.session_state['memo'] = ''
                     st.session_state['price'] = 0.0
