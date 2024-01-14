@@ -15,7 +15,6 @@ def transaction_tab() -> None:
     payment_method_default = payment_options.index('Credit')
     shared_default = get_transaction_tab_shared_default()
     shared_value = shared_default
-    st.session_state['shared'] = shared_default
     if worksheet_client:
         presets = get_transaction_tab_presets()
         if presets:
