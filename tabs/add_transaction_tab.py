@@ -5,7 +5,16 @@ from utils import get_worksheet_client, get_transaction_tab_shared_default, get_
 
 def transaction_tab() -> None:
     worksheet_client = get_worksheet_client()
+    memo_default = ''
+    category_options = [c for c in category_color_map.keys() if c != 'Savings']
+    category_default = 0
+    owner_options = list(get_owner_color_map().keys())
+    owner_default = 0
+    price_default = 0.0
+    payment_options = list(payment_method_color_map.keys())
+    payment_method_default = payment_options.index('Credit')
     shared_default = get_transaction_tab_shared_default()
+    shared_value = shared_default
     st.session_state['shared'] = shared_default
     if worksheet_client:
         presets = get_transaction_tab_presets()
@@ -13,41 +22,41 @@ def transaction_tab() -> None:
             preset = st.selectbox('Preset', ['New transaction'] + list(presets.keys()), key='preset')
             if preset:
                 if preset == 'New transaction':
-                    st.session_state['memo'] = ''
-                    st.session_state['price'] = 0
-                    st.session_state['payment_method'] = 'Credit'
-                    st.session_state['shared_expense'] = shared_default
+                    memo_default = ''
+                    price_default = 0
+                    payment_method_default = payment_options.index('Credit')
                 else:
                     preset_val = presets[preset]
                     if 'memo' in preset_val:
-                        st.session_state['memo'] = preset_val['memo']
+                        memo_default = preset_val['memo']
                     if 'category' in preset_val:
-                        st.session_state['category'] = preset_val['category']
+                        category_default = category_options.index(preset_val['category'])
                     if 'owner' in preset_val:
-                        st.session_state['owner'] = preset_val['owner']
+                        owner_default = owner_options.index(preset_val['owner'])
                     if 'price' in preset_val:
-                        st.session_state['price'] = float(preset_val['price'])
+                        price_default = float(preset_val['price'])
                     if 'payment_method' in preset_val:
-                        st.session_state['payment_method'] = preset_val['payment_method']
+                        payment_method_default = payment_options.index(preset_val['payment_method'])
                     if 'shared' in preset_val:
-                        st.session_state['shared'] = bool(preset_val['shared'])
+                        shared_value = bool(preset_val['shared'])
 
         with st.form('add_transaction_form', clear_on_submit=False, border=False):
             col1, col2 = st.columns(2)
             with col1:
                 date = st.date_input('Date', value='today', format='MM/DD/YYYY', key='date')
-                memo = st.text_input('Memo', key='memo')
+                memo = st.text_input('Memo', value=memo_default, key='memo')
                 category = st.selectbox('Category',
-                                        [c for c in category_color_map.keys() if c != 'Savings'],
-                                        key='category')
+                                        category_options,
+                                        index=category_default, key='category')
             with col2:
-                owner = st.selectbox('Owner', get_owner_color_map(), key='owner')
-                price = st.number_input('Price', key='price')
-                payment_method = st.selectbox('Payment Method', payment_method_color_map.keys(), index=0,
+                owner = st.selectbox('Owner', owner_options,
+                                     index=owner_default, key='owner')
+                price = st.number_input('Price', value=price_default, key='price')
+                payment_method = st.selectbox('Payment Method', payment_options,
                                             format_func=lambda p: f'{payment_method_label_prefix[p]} {p}',
-                                            key='payment_method')
+                                            index=payment_method_default, key='payment_method')
                 shared = st.checkbox('Shared Expense?',
-                                     key='shared')
+                                     value=shared_value, key='shared')
                 if shared:
                     shared = 'Yes'
                 else:
