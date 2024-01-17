@@ -22,7 +22,7 @@ def transaction_tab() -> None:
             if preset:
                 if preset == 'New transaction':
                     memo_default = ''
-                    price_default = 0
+                    price_default = 0.0
                     payment_method_default = payment_options.index('Credit')
                 else:
                     preset_val = presets[preset]
