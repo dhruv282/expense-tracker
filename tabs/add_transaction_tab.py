@@ -70,7 +70,7 @@ def transaction_tab() -> None:
                             st.toast(':red[Invalid value for Price field]', icon='😢')
                     else:
                         values = [date.strftime('%m/%d/%Y'), memo, category, owner, price, payment_method, shared]
-                        res = worksheet_client.append_row(values)
+                        res = worksheet_client.append_row(values, value_input_option = 'USER_ENTERED')
                         if res:
                             st.toast(':green[Transaction added successfully!]', icon='🎉')
                         else:
