@@ -19,7 +19,11 @@ def get_transaction_tab_presets(
         )['expense_tracker']['transaction_tab']['presets']
         if len(presets) > 0:
             def get_key(p_dict):
-                key = f"{p_dict['memo']}"
+                key = ""
+                if 'memo' in p_dict:
+                    key = f"{p_dict['memo']}"
+                elif 'category' in p_dict:
+                    key = f"{p_dict['category']}"
                 if 'owner' in p_dict:
                     return f"{key} ({p_dict['owner']})"
                 return key
